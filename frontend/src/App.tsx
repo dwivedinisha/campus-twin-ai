@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import EnergyAnalytics from "./EnergyAnalytics";
+
 
 interface Building {
   id: number;
@@ -21,6 +23,7 @@ interface EnergyRow {
 const API_BASE = "http://127.0.0.1:8000";
 
 function App() {
+  const [page, setPage] = useState<"dashboard" | "analytics">("dashboard");
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [energy, setEnergy] = useState<EnergyRow[]>([]);
@@ -31,10 +34,21 @@ function App() {
     fetch(`${API_BASE}/energy`).then(r => r.json()).then(setEnergy);
   }, []);
 
+  if (page === "analytics") {
+    return (
+      <div>
+        <button onClick={() => setPage("dashboard")} className="m-4 bg-slate-700 px-4 py-2 rounded">← Back</button>
+        <EnergyAnalytics />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-white p-8">
-      <h1 className="text-3xl font-bold mb-6">CampusTwin AI</h1>
-
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold mb-6">CampusTwin AI</h1>
+        <button onClick={() => setPage("analytics")} className="bg-emerald-600 px-4 py-2 rounded">Energy Analytics →</button>
+      </div>
       <h2 className="text-xl font-semibold mb-2">Buildings ({buildings.length})</h2>
       <div className="flex gap-4 mb-8">
         {buildings.map(b => (
