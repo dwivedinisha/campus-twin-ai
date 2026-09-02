@@ -3,3 +3,6 @@ numpy
 openpyxl
 psycopg2-binary
 python-dotenv
+scikit-learn
+xgboost
+joblib
