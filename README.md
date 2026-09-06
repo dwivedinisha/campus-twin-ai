@@ -218,7 +218,3 @@ Next up:
 - **Human-in-the-loop for consequential actions.** No AI-to-actuator path is fully automatic; approval steps are mandatory for anything that changes simulated (and eventually real) campus state.
 
 ---
-
-## License
-
-Educational / final-year project. Not intended for production deployment against real campus infrastructure without further security, privacy, and safety review.
