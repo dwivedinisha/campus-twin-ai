@@ -2,7 +2,7 @@ import sys, os, asyncio
 from fastapi import FastAPI
 from routers import buildings, rooms, energy, twin, predictions, alerts
 from fastapi.middleware.cors import CORSMiddleware
-from routers import buildings, rooms, energy, twin
+from routers import buildings, rooms, energy, twin, predictions, alerts, simulation
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "digital_twin"))
 from engine import run_engine
@@ -22,6 +22,7 @@ app.include_router(energy.router)
 app.include_router(twin.router)
 app.include_router(predictions.router)
 app.include_router(alerts.router)
+app.include_router(simulation.router)
 
 @app.on_event("startup")
 async def start_engine():
