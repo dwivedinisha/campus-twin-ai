@@ -66,50 +66,7 @@ Real IoT data, when eventually integrated, will be tagged `LIVE_IOT`. The system
 
 A real public dataset (Kaggle: *Energy Consumption, Temperature, Occupancy*) was used **only to calibrate simulator parameters** (e.g., the relative strength of temperature vs. occupancy as energy drivers) — it was never loaded into the system's own dataset. See `simulator/calibration/`.
 
----
 
-## Project Structure
-
-```
-campus-twin-ai/
-├── simulator/              # Campus simulation engine
-│   ├── configs/
-│   │   └── campus_config.py
-│   ├── generators/          # occupancy, environment, energy, anomalies, noise
-│   ├── calibration/          # real-data analysis scripts
-│   └── run_simulator.py
-├── db/                     # Schema + data loading
-│   ├── schema.sql
-│   ├── connection.py
-│   ├── create_schema.py
-│   └── load_data.py
-├── backend/                # FastAPI application
-│   ├── main.py
-│   ├── database.py
-│   ├── schemas.py
-│   └── routers/             # buildings, rooms, energy, twin, predictions, alerts, simulation
-├── digital_twin/            # Live in-memory state engine
-│   ├── engine.py
-│   └── state.py
-├── ml/                      # Machine learning
-│   ├── training/             # occupancy, energy, anomaly model training scripts
-│   ├── inference/            # prediction/detection functions used by the API
-│   └── models/               # saved .pkl model files (gitignored)
-├── frontend/                # React dashboard
-│   └── src/
-│       ├── App.tsx
-│       └── EnergyAnalytics.tsx
-├── docs/
-│   └── images/               # architecture diagrams and screenshots
-├── data/
-│   ├── generated/            # simulator output (gitignored)
-│   └── raw/                  # real calibration datasets (gitignored)
-├── .env.example
-├── .gitignore
-└── requirements.txt
-```
-
----
 
 ## Setup (Windows)
 
