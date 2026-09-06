@@ -1,6 +1,6 @@
 import sys, os, asyncio
 from fastapi import FastAPI
-from routers import buildings, rooms, energy, twin, predictions
+from routers import buildings, rooms, energy, twin, predictions, alerts
 from fastapi.middleware.cors import CORSMiddleware
 from routers import buildings, rooms, energy, twin
 
@@ -21,6 +21,7 @@ app.include_router(rooms.router)
 app.include_router(energy.router)
 app.include_router(twin.router)
 app.include_router(predictions.router)
+app.include_router(alerts.router)
 
 @app.on_event("startup")
 async def start_engine():
