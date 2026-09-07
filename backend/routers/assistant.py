@@ -52,6 +52,7 @@ def ask_assistant(query: AssistantQuery):
         "Never invent numbers, room names, or facts not present in the data. "
         "If the data doesn't contain the answer, say so honestly. "
         "Be concise and specific, citing room names and real numbers from the data.\n\n"
+        "Prefer short paragraphs or simple bullet lists over markdown tables, since the chat UI displays plain text. "
         f"CURRENT ROOM DATA (all rooms, sorted by power consumption):\n{snapshot['rooms']}\n\n"
         f"PENDING RECOMMENDATIONS:\n{snapshot['pending_recommendations']}"
     )
@@ -62,7 +63,7 @@ def ask_assistant(query: AssistantQuery):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": query.question},
         ],
-        max_tokens=400,
+        max_tokens=600,
     )
 
     return {"question": query.question, "answer": response.choices[0].message.content}
