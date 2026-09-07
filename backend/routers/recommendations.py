@@ -1,4 +1,10 @@
 import sys, os
+import json
+from decimal import Decimal
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "digital_twin"))
+from state import set_override
+
+
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
 from database import get_connection
@@ -111,14 +117,60 @@ def get_recommendations(status: str = None):
 def approve_recommendation(rec_id: int):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("UPDATE recommendation SET status = 'APPROVED' WHERE id = %s RETURNING id", (rec_id,))
-    result = cur.fetchone()
+    cur.execute("""
+        SELECT rec.id, rec.room_id, rec.proposed_action, r.name AS room_name
+        FROM recommendation rec JOIN room r ON rec.room_id = r.id
+        WHERE rec.id = %s
+    """, (rec_id,))
+    rec = cur.fetchone()
+
+    if not rec:
+        cur.close()
+        conn.close()
+        raise HTTPException(status_code=404, detail="Recommendation not found")
+
+    cur.execute("""
+        SELECT occupancy, temperature_c, humidity_pct, ac_status, lighting_status, power_kw
+        FROM sensor_reading WHERE room_id = %s ORDER BY timestamp DESC LIMIT 1
+    """, (rec["room_id"],))
+    before = cur.fetchone()
+
+    
+    previous_state = {k: (float(v) if isinstance(v, (int, float, Decimal)) else v) for k, v in before.items()}
+    action_taken = rec["proposed_action"]
+    new_state = dict(previous_state)
+
+    if action_taken == "Turn AC OFF":
+        set_override(rec["room_name"], "ac_status", "OFF")
+        new_state["ac_status"] = "OFF"
+    elif action_taken == "Schedule maintenance check":
+        pass  # No state mutation - this is an informational/maintenance recommendation, not actuation
+
+    cur.execute("UPDATE recommendation SET status = 'EXECUTED' WHERE id = %s", (rec_id,))
+    cur.execute("""
+        INSERT INTO action_log (recommendation_id, room_id, action, previous_state, new_state)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (rec_id, rec["room_id"], action_taken, json.dumps(previous_state), json.dumps(new_state)))
+
     conn.commit()
     cur.close()
     conn.close()
-    if not result:
-        raise HTTPException(status_code=404, detail="Recommendation not found")
-    return {"id": rec_id, "status": "APPROVED"}
+    return {"id": rec_id, "status": "EXECUTED", "action": action_taken, "previous_state": previous_state, "new_state": new_state}
+
+
+@router.get("/actions")
+def get_action_log():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT al.id, r.name AS room_id, al.action, al.previous_state, al.new_state, al.executed_at
+        FROM action_log al JOIN room r ON al.room_id = r.id
+        ORDER BY al.executed_at DESC
+    """)
+    result = cur.fetchall()
+    cur.close()
+    conn.close()
+    return result
 
 
 @router.post("/recommendations/{rec_id}/reject")
