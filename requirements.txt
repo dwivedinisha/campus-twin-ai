@@ -6,3 +6,5 @@ python-dotenv
 scikit-learn
 xgboost
 joblib
+pytest
+httpx
