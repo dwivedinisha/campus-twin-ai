@@ -19,7 +19,7 @@ from state import update_room_state
 from connection import get_connection
 
 ENERGY_PARAMS_Q = dict(ENERGY_PARAMS, AC_QUADRATIC_COEFF=AC_QUADRATIC_COEFF)
-TICK_SECONDS = 10
+TICK_SECONDS = 3
 
 rng = np.random.default_rng(RANDOM_SEED + 999)
 room_to_building = {r: b for b, rooms in BUILDINGS.items() for r in rooms}

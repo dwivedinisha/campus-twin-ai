@@ -3,7 +3,7 @@ import EnergyAnalytics from "./EnergyAnalytics";
 import WhatIf from "./WhatIf";
 import Recommendations from "./Recommendations";
 import Assistant from "./Assistant";
-
+import Campus3D from "./Campus3D";
 
 interface Building {
   id: number;
@@ -26,10 +26,11 @@ interface EnergyRow {
 const API_BASE = "http://127.0.0.1:8000";
 
 function App() {
-  const [page, setPage] = useState<"dashboard" | "analytics" | "whatif" | "recommendations" | "assistant">("dashboard");
+  const [page, setPage] = useState<"dashboard" | "analytics" | "whatif" | "recommendations" | "assistant" | "campus3d">("dashboard");
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [energy, setEnergy] = useState<EnergyRow[]>([]);
+
 
   useEffect(() => {
     fetch(`${API_BASE}/buildings`).then(r => r.json()).then(setBuildings);
@@ -39,6 +40,9 @@ function App() {
 
   if (page === "analytics") {
     return <div><NavBar setPage={setPage} /><EnergyAnalytics /></div>;
+  }
+  if (page === "campus3d") {
+    return <div><NavBar setPage={setPage} /><Campus3D /></div>;
   }
   if (page === "whatif") {
     return <div><NavBar setPage={setPage} /><WhatIf /></div>;
@@ -97,6 +101,7 @@ function NavBar({ setPage }: { setPage: (p: any) => void }) {
       <button onClick={() => setPage("whatif")} className="px-3 py-1.5 rounded hover:bg-slate-700">What-If</button>
       <button onClick={() => setPage("recommendations")} className="px-3 py-1.5 rounded hover:bg-slate-700">Recommendations</button>
       <button onClick={() => setPage("assistant")} className="px-3 py-1.5 rounded hover:bg-slate-700">Assistant</button>
+            <button onClick={() => setPage("campus3d")} className="px-3 py-1.5 rounded hover:bg-slate-700">3D Campus</button>
     </div>
   );
 }

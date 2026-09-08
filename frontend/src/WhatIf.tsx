@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const API_BASE = "http://127.0.0.1:8000";
-const ROOMS = ["A101","A102","A103","A104","A105","A106","A107","A108","A109","A110",
-               "B101","B102","B103","B104","B105","B106","B107","B108","B109","B110",
-               "C101","C102","C103","C104","C105","C106","C107","C108","C109","C110"];
 
 function WhatIf() {
-  const [roomId, setRoomId] = useState("A101");
+  const [rooms, setRooms] = useState<string[]>([]);
+  const [roomId, setRoomId] = useState("");
   const [acOn, setAcOn] = useState<boolean | null>(null);
   const [occupancy, setOccupancy] = useState<string>("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/rooms`).then(r => r.json()).then(data => {
+      const roomNames = data.map((r: any) => r.name).sort();
+      setRooms(roomNames);
+      if (roomNames.length > 0) setRoomId(roomNames[0]);
+    });
+  }, []);
 
   const runSimulation = async () => {
     setLoading(true);
@@ -35,7 +41,7 @@ function WhatIf() {
         <div>
           <label className="block text-sm text-slate-400 mb-1">Room</label>
           <select className="bg-slate-700 rounded px-3 py-2 w-full" value={roomId} onChange={e => setRoomId(e.target.value)}>
-            {ROOMS.map(r => <option key={r}>{r}</option>)}
+            {rooms.map(r => <option key={r}>{r}</option>)}
           </select>
         </div>
 

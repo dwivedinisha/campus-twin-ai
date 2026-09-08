@@ -1,5 +1,5 @@
-NUM_BUILDINGS = 3
-ROOMS_PER_BUILDING = 10
+NUM_BUILDINGS = 10
+ROOMS_PER_BUILDING = 20
 
 BUILDINGS = {
     f"Building_{chr(64 + b)}": [f"{chr(64 + b)}{100 + r}" for r in range(1, ROOMS_PER_BUILDING + 1)]
