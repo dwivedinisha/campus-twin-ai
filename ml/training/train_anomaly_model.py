@@ -4,9 +4,9 @@ from sklearn.ensemble import IsolationForest
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "db"))
-from connection import get_connection
+from connection import get_plain_connection
 
-conn = get_connection()
+conn = get_plain_connection()
 df = pd.read_sql("""
     SELECT sr.timestamp, r.name AS room_id, sr.occupancy, sr.temperature_c, sr.humidity_pct,
            sr.ac_status, sr.lighting_status, sr.power_kw, sr.is_anomaly

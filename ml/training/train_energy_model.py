@@ -5,9 +5,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "db"))
-from connection import get_connection
+from connection import get_plain_connection
 
-conn = get_connection()
+conn = get_plain_connection()
 df = pd.read_sql("""
     SELECT sr.timestamp, r.name AS room_id, sr.occupancy, sr.temperature_c, sr.humidity_pct,
            sr.ac_status, sr.lighting_status, sr.power_kw

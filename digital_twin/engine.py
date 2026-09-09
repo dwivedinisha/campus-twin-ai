@@ -37,6 +37,7 @@ def status_for(is_anomaly):
 
 def tick():
     global sim_time
+    sim_time = datetime.now()
     hour_float = sim_time.hour + sim_time.minute / 60.0
     is_weekend = sim_time.weekday() >= 5
     day_offset = sim_time.timetuple().tm_yday
@@ -106,7 +107,7 @@ def tick():
     conn.commit()
     cur.close()
     conn.close()
-    sim_time += timedelta(minutes=INTERVAL_MINUTES)
+    # sim_time += timedelta(minutes=INTERVAL_MINUTES)
 
 
 async def run_engine():
